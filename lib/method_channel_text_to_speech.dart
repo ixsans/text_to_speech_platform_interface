@@ -80,10 +80,10 @@ class MethodChannelTextToSpeech extends TextToSpeechPlatform {
       return null;
     }
 
-    Map<String, dynamic> langNameMap =
+    Map<String, dynamic> languageNamesDict =
         locales['language-names'] as Map<String, dynamic>;
-    if (langNameMap.containsKey(langCode)) {
-      final List<dynamic> langNames = langNameMap[langCode] as List<dynamic>;
+    if (languageNamesDict.containsKey(langCode)) {
+      final List<dynamic> langNames = languageNamesDict[langCode] as List<dynamic>;
       String displayLang = langNames.first as String;
       return displayLang;
     }
