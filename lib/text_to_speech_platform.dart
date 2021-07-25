@@ -11,7 +11,7 @@ abstract class TextToSpeechPlatform extends PlatformInterface{
   /// Getter of current platform instance
   static TextToSpeechPlatform get instance => _instance;
 
-  /// Setter
+  /// Setter of current platform interface
   static set instance(TextToSpeechPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
@@ -75,10 +75,6 @@ abstract class TextToSpeechPlatform extends PlatformInterface{
 
   Future<List<String>?> getVoiceByLang(String lang) async {
     throw UnimplementedError('getVoiceByLang() has not been implemented');
-  }
-
-  Future<Map<String, dynamic>?> getLocales() async {
-    throw UnimplementedError('getLocales() has not been implemented');
   }
 
 }

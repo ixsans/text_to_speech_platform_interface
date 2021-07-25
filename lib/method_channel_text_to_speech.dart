@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'locales.dart';
 import 'text_to_speech_platform.dart';
 
 const MethodChannel _channel = MethodChannel('dev.ixsans/text_to_speech');
 
 class MethodChannelTextToSpeech extends TextToSpeechPlatform {
-  Map<String, dynamic>? locales;
-
   @override
   Future<bool?> speak(String text) {
     return _channel.invokeMethod<bool>('speak', <String, Object>{'text': text});
@@ -65,8 +63,6 @@ class MethodChannelTextToSpeech extends TextToSpeechPlatform {
 
   @override
   Future<List<String>?> getDisplayLanguages() async {
-    locales ?? await getLocales();
-
     List<String> displayedLanguages = <String>[];
     List<dynamic> langList = await getLanguages();
     for (dynamic lang in langList) {
@@ -84,12 +80,8 @@ class MethodChannelTextToSpeech extends TextToSpeechPlatform {
       return null;
     }
 
-    if (locales == null) {
-      locales = await getLocales();
-    }
-
     Map<String, dynamic> langNameMap =
-        locales!['language-names'] as Map<String, dynamic>;
+        locales['language-names'] as Map<String, dynamic>;
     if (langNameMap.containsKey(langCode)) {
       final List<dynamic> langNames = langNameMap[langCode] as List<dynamic>;
       String displayLang = langNames.first as String;
@@ -105,10 +97,8 @@ class MethodChannelTextToSpeech extends TextToSpeechPlatform {
       return Future.value(null);
     }
 
-    locales ?? await getLocales();
-
     Map<String, dynamic> langName =
-        locales!['language-names'] as Map<String, dynamic>;
+        locales['language-names'] as Map<String, dynamic>;
 
     String? languageCode = langName.keys.firstWhereOrNull((dynamic key) {
       List<dynamic> langNameList = langName[key as String] as List<dynamic>;
@@ -129,13 +119,6 @@ class MethodChannelTextToSpeech extends TextToSpeechPlatform {
     List<dynamic> voices = await _channel
         .invokeMethod('getVoiceByLanguage', <String, dynamic>{'lang': lang});
     return voices.map((dynamic e) => e as String).toList();
-  }
-
-  @override
-  Future<Map<String, dynamic>?> getLocales() async {
-    String jsonString = await rootBundle
-        .loadString('packages/text_to_speech/assets/locales.json');
-    return jsonDecode(jsonString) as Map<String, dynamic>;
   }
 }
 
