@@ -1,7 +1,8 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'locales.dart';
 import 'method_channel_text_to_speech.dart';
 
-abstract class TextToSpeechPlatform extends PlatformInterface{
+abstract class TextToSpeechPlatform extends PlatformInterface {
   TextToSpeechPlatform() : super(token: _token);
 
   static final Object _token = Object();
@@ -57,18 +58,6 @@ abstract class TextToSpeechPlatform extends PlatformInterface{
     throw UnimplementedError('getDefaultLanguage() has not been implemented');
   }
 
-  Future<List<String>?> getDisplayLanguages() async {
-    throw UnimplementedError('getDisplayLanguages() has not been implemented');
-  }
-
-  Future<String?> getDisplayLanguageByCode(String langCode) async {
-    throw UnimplementedError('getDisplayLanguageByCode() has not been implemented');
-  }
-
-  Future<String?> getLanguageCodeByName(String languageName) async {
-    throw UnimplementedError('getLanguageCodeByName() has not been implemented');
-  }
-
   Future<List<String>?> getVoice() async {
     throw UnimplementedError('getVoice() has not been implemented');
   }
@@ -77,4 +66,48 @@ abstract class TextToSpeechPlatform extends PlatformInterface{
     throw UnimplementedError('getVoiceByLang() has not been implemented');
   }
 
+  Future<List<String>?> getDisplayLanguages() async {
+    List<String> displayedLanguages = <String>[];
+    List<dynamic> langList = await getLanguages();
+    for (dynamic lang in langList) {
+      String? displayLang = await getDisplayLanguageByCode(lang);
+      if (displayLang != null) {
+        displayedLanguages.add(displayLang);
+      }
+    }
+    return displayedLanguages;
+  }
+
+  Future<String?> getDisplayLanguageByCode(String langCode) async {
+    if (langCode.isEmpty) {
+      return null;
+    }
+
+    Map<String, dynamic> languageNamesDict =
+        locales['language-names'] as Map<String, dynamic>;
+    if (languageNamesDict.containsKey(langCode)) {
+      final List<dynamic> langNames =
+          languageNamesDict[langCode] as List<dynamic>;
+      String displayLang = langNames.first as String;
+      return displayLang;
+    }
+
+    return null;
+  }
+
+  Future<String?> getLanguageCodeByName(String languageName) async {
+    if (languageName.isEmpty) {
+      return Future.value(null);
+    }
+
+    Map<String, dynamic> langName =
+        locales['language-names'] as Map<String, dynamic>;
+
+    String? languageCode = langName.keys.firstWhereOrNull((dynamic key) {
+      List<dynamic> langNameList = langName[key as String] as List<dynamic>;
+      return (langNameList.first as String) == languageName;
+    });
+
+    return languageCode;
+  }
 }

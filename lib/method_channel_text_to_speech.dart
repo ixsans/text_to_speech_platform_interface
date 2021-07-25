@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-import 'locales.dart';
 import 'text_to_speech_platform.dart';
 
 const MethodChannel _channel = MethodChannel('dev.ixsans/text_to_speech');
@@ -62,53 +61,6 @@ class MethodChannelTextToSpeech extends TextToSpeechPlatform {
   @override
   Future<String?> getDefaultLanguage() async {
     return _channel.invokeMethod('getDefaultLanguage') as String?;
-  }
-
-  @override
-  Future<List<String>?> getDisplayLanguages() async {
-    List<String> displayedLanguages = <String>[];
-    List<dynamic> langList = await getLanguages();
-    for (dynamic lang in langList) {
-      String? displayLang = await getDisplayLanguageByCode(lang);
-      if (displayLang != null) {
-        displayedLanguages.add(displayLang);
-      }
-    }
-    return displayedLanguages;
-  }
-
-  @override
-  Future<String?> getDisplayLanguageByCode(String langCode) async {
-    if (langCode.isEmpty) {
-      return null;
-    }
-
-    Map<String, dynamic> languageNamesDict =
-        locales['language-names'] as Map<String, dynamic>;
-    if (languageNamesDict.containsKey(langCode)) {
-      final List<dynamic> langNames = languageNamesDict[langCode] as List<dynamic>;
-      String displayLang = langNames.first as String;
-      return displayLang;
-    }
-
-    return null;
-  }
-
-  @override
-  Future<String?> getLanguageCodeByName(String languageName) async {
-    if (languageName.isEmpty) {
-      return Future.value(null);
-    }
-
-    Map<String, dynamic> langName =
-        locales['language-names'] as Map<String, dynamic>;
-
-    String? languageCode = langName.keys.firstWhereOrNull((dynamic key) {
-      List<dynamic> langNameList = langName[key as String] as List<dynamic>;
-      return (langNameList.first as String) == languageName;
-    });
-
-    return languageCode;
   }
 
   @override
