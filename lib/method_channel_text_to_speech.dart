@@ -7,6 +7,9 @@ const MethodChannel _channel = MethodChannel('dev.ixsans/text_to_speech');
 class MethodChannelTextToSpeech extends TextToSpeechPlatform {
   @override
   Future<bool?> speak(String text) {
+    if (text.isEmpty) {
+      return Future.value(false);
+    }
     return _channel.invokeMethod<bool>('speak', <String, Object>{'text': text});
   }
 
