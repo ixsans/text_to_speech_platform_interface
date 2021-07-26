@@ -60,7 +60,8 @@ class MethodChannelTextToSpeech extends TextToSpeechPlatform {
 
   @override
   Future<String?> getDefaultLanguage() async {
-    return _channel.invokeMethod('getDefaultLanguage') as String?;
+    dynamic defaultLang = await _channel.invokeMethod('getDefaultLanguage');
+    return defaultLang as String?;
   }
 
   @override
